@@ -159,7 +159,7 @@ export default {
   },
   methods: {
     gpt3() {
-      fetch("/api/gpt3", {
+      useFetch("/api/gpt3", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
