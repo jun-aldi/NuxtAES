@@ -135,7 +135,7 @@
           </div>
         </div>
         <div
-          class="p-4 mb-8 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 md:p-12"
+          class="p-4 mt-4 mb-8 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 md:p-12"
         >
           <a
             href="#"
@@ -228,7 +228,7 @@ export default {
           this.error_message=error;
           console.error(error);
           this.loading = false; // Set loading back to false
-          this.error = false; // Set loading back to false
+          this.error = true; // Set loading back to false
         });
     },
   },
