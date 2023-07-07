@@ -159,7 +159,7 @@ export default {
   },
   methods: {
     gpt3() {
-      useFetch("/api/gpt3", {
+      fetch("/api/gpt3", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +170,7 @@ export default {
         // }),
         body: JSON.stringify({
           textGPT:
-            "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with precentage)} --QEUSTION-- " +
+            "You is Indonesia historycal teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with precentage)} --QEUSTION-- " +
             this.questions +
             " --QEUSTION-- " +
             " \n--ANSWER-- " +
