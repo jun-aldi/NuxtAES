@@ -150,61 +150,84 @@ export default {
   methods: {
     gpt3() {
       if (this.essays === "" && this.questions === "") {
+        // Code to execute if both conditions are true
         this.error_message = "Harap isi jawaban dan pertanyaan !!";
+        this.result = "";
+        this.score = "";
+        this.correction = "";
+        this.confidenceScore = "";
         this.error = true;
-      } else if (this.questions === "") {
+      }
+      else if (this.questions === "") {
+        // Code to execute if both conditions are true
         this.error_message = "Harap isi pertanyaan !";
+        this.result = "";
+        this.score = "";
+        this.correction = "";
+        this.confidenceScore = "";
         this.error = true;
-      } else if (this.essays === "") {
+      }
+      else if (this.essays === "") {
+        // Code to execute if both conditions are true
         this.error_message = "Harap isi jawaban !";
+        this.result = "";
+        this.score = "";
+        this.correction = "";
+        this.confidenceScore = "";
         this.error = true;
-      } else {
-        this.loading = true;
-        this.error = false;
-        fetch("/api/gpt3", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            textGPT:
-              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with precentage)} --QEUSTION-- " +
-              this.questions +
-              " --QEUSTION-- " +
-              " \n--ANSWER-- " +
-              this.essays +
-              " --ANSWER-- ",
-          }),
-        })
-          .then((response) => {
+      }
+      else{
+      this.loading = true; // Set loading to true
+      this.error = false; // Set loading to true
+      fetch("/api/gpt3", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        // body: JSON.stringify({
+        //   textGPT: "pertanyaan :" + this.questions + "jawaban :" + this.answers,
+        // }),
+        body: JSON.stringify({
+          textGPT:
+            "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) /ncorrection: (correction in bahasa) confidence score: (confidence score with precentage)} --QEUSTION-- " +
+            this.questions +
+            " --QEUSTION-- " +
+            " \n--ANSWER-- " +
+            this.essays +
+            " --ANSWER-- ",
+        }),
+      })
+      .then((response) => {
             if (!response.ok) {
               throw new Error(response.status);
             }
             return response.json();
           })
           .then((data) => {
-            if (this.result !== "") {
-              this.result = data.result;
-              this.score = this.result.split("\n")[0].split(":")[1].trim();
-              this.correction = this.result.split("\n")[1].split(":")[1].trim();
-              this.confidenceScore = this.result
-                .split("\n")[2]
-                .split(":")[1]
-                .trim();
-              console.log(this.score);
-              console.log(this.correction);
-              console.log(this.confidenceScore);
-            }
-            this.loading = false;
-          })
-          .catch((error) => {
-            this.error_message = "Error: " + error.message;
-            this.error = true;
-            this.loading = false;
-          });
+            this.result = data.result;
+          if (this.result !== "") {
+            this.score = this.result.split("\n")[0].split(":")[1].trim();
+            this.correction = this.result.split("\n")[1].split(":")[1].trim();
+            this.confidenceScore = this.result
+              .split("\n")[2]
+              .split(":")[1]
+              .trim();
+            console.log(this.score);
+            console.log(this.correction);
+            console.log(this.confidenceScore);
+          }
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.error_message = "Error: " + error.message;
+          console.error(error);
+          this.loading = false; // Set loading back to false
+          this.error = true; // Set loading back to false
+        })
+        ;
       }
     },
   },
-
 };
 </script>
