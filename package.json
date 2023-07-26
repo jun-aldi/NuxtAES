@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "flowbite": "^1.7.0",
-    "openai": "^3.2.0"
+    "openai": "^3.2.0",
+    "papaparse": "^5.4.1"
   }
 }

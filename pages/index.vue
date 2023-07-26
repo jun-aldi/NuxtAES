@@ -126,6 +126,7 @@
   </div>
 </template>
 <script>
+import { initFlowbite } from 'flowbite'
 definePageMeta({
   layout: "nav",
 });
@@ -230,4 +231,7 @@ export default {
     },
   },
 };
+onMounted(() => {
+    initFlowbite();
+})
 </script>

@@ -9,7 +9,6 @@ module.exports = {
     "./app.vue",
     "./node_modules/flowbite/**/*.{js,ts}"
   ],
-
   theme: {
     extend: {},
   },
