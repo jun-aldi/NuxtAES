@@ -1,78 +1,61 @@
 <template>
-    <div id="app">
-      <h1 class="pb-5 text-3xl">{{ message }}</h1>
-      <input type="file" @change="parseFile" ref="myFileUpload" />
-      <table class="">
-        <tr>
-          <th v-for="field in fields" :key="field.column" class="min-w-min">
-            <label :for="'selectableField'+field.column">
-              <br />
-              {{ field.cellName }}
-            </label>
-          </th>
-          <th class="min-w-min">Detail</th>
-        </tr>
-        <tr v-for="(user, index) in userRows" :key="index">
-          <td v-for="(key, value) in user" :key="key">
-            {{ key }}
-          </td>
-          <td class="min-w-min">
-            <button @click="toggleDetail(index)">
-              {{ showDetail[index] ? 'Hide' : 'Detail' }}
+  <div>
+    <button class="px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase transition-all duration-150 ease-linear bg-pink-500 rounded shadow outline-none active:bg-pink-600 hover:shadow-lg focus:outline-none" type="button" v-on:click="toggleModal()">
+      Open regular modal
+    </button>
+    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+      <div class="relative w-auto max-w-3xl mx-auto my-6">
+        <!--content-->
+        <div class="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none">
+          <!--header-->
+          <div class="flex items-start justify-between p-5 border-b border-solid rounded-t border-slate-200">
+            <h3 class="text-3xl font-semibold">
+              Modal Title
+            </h3>
+            <button class="float-right p-1 ml-auto text-3xl font-semibold leading-none text-black bg-transparent border-0 outline-none opacity-5 focus:outline-none" v-on:click="toggleModal()">
+              <span class="block w-6 h-6 text-2xl text-black bg-transparent outline-none opacity-5 focus:outline-none">
+                ×
+              </span>
             </button>
-            <div v-if="showDetail[index]">
-              <!-- Add your hidden columns here -->
-              <span>Hidden Column 1: {{ user.hiddenColumn1 }}</span>
-              <span>Hidden Column 2: {{ user.hiddenColumn2 }}</span>
-            </div>
-          </td>
-        </tr>
-      </table>
+          </div>
+          <!--body-->
+          <div class="relative flex-auto p-6">
+            <p class="my-4 text-lg leading-relaxed text-slate-500">
+              I always felt like I could do anything. That’s the main
+              thing people are controlled by! Thoughts- their perception
+              of themselves! They're slowed down by their perception of
+              themselves. If you're taught you can’t do anything, you
+              won’t do anything. I was taught I could do everything.
+            </p>
+          </div>
+          <!--footer-->
+          <div class="flex items-center justify-end p-6 border-t border-solid rounded-b border-slate-200">
+            <button class="px-6 py-3 mb-1 mr-1 text-sm font-bold text-red-500 uppercase transition-all duration-150 ease-linear bg-transparent border border-red-500 border-solid rounded outline-none hover:bg-red-500 hover:text-white active:bg-red-600 focus:outline-none" type="button" v-on:click="toggleModal()">
+              Close
+            </button>
+            <button class="px-6 py-2 mb-1 mr-1 text-sm font-bold text-red-500 uppercase transition-all duration-150 ease-linear outline-none background-transparent focus:outline-none" type="button" v-on:click="toggleModal()">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </template>
+    <div v-if="showModal" class="fixed inset-0 z-40 bg-black opacity-25"></div>
+  </div>
+</template>
+
 <script>
-import Papa from 'papaparse';
 export default {
+  name: "regular-modal",
   data() {
     return {
-      userRows: [],
-      message: 'Papa Parse File Mapper',
-      file: '',
-      results: '',
-      fields: [],
-      config: {
-        delimiter: '',
-        newline: '',
-        quoteChar: '"',
-        escapeChar: '"',
-        preview: 11,
-        header: true,
-        complete: this.displayCompleteFile,
-      },
-      showDetail: [], // New data property to track the visibility of hidden columns
-    };
+      showModal: false
+    }
   },
   methods: {
-    displayCompleteFile(results, file) {
-      console.log('Completed File', results, file);
-      this.userRows = results.data;
-      let fields = results.meta.fields;
-      this.fields = fields.map((x, indx) => {
-        return {
-          column: indx,
-          cellName: x,
-          assignedValue: '',
-        };
-      });
-      this.showDetail = Array(this.userRows.length).fill(false); // Initialize showDetail with false for each row
-    },
-    parseFile(event) {
-      this.results = Papa.parse(this.$refs.myFileUpload.files[0], this.config);
-    },
-    toggleDetail(index) {
-      this.$set(this.showDetail, index, !this.showDetail[index]);
-    },
-  },
-};
+    toggleModal: function(){
+      this.showModal = !this.showModal;
+    }
+  }
+}
 </script>
-  

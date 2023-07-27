@@ -56,7 +56,7 @@ export default {
 
       //csv
       userRows: [],
-      message: 'Papa Parse File Mapper',
+      message: 'Multiple AES with CSV',
       file: '',
       results: '',
       fields: [],
@@ -92,23 +92,26 @@ export default {
     },
     showModal(user) {
       this.selectedUser = user;
+      this.removeDetailClasses();
     },
 
     async processGpt3() {
+      this.removeDetailClasses();
       const aesDivs = document.querySelectorAll(".aes");
       for (const div of aesDivs) {
+        const divId = div.id;
         const pertanyaan = div.querySelector(`.pertanyaan-${div.id}`).textContent;
         const jawaban = div.querySelector(`.jawaban-${div.id}`).textContent;
 
         try {
-          await this.gpt3(pertanyaan, jawaban,); // Wait for gpt3() to finish before proceeding
+          await this.gpt3(pertanyaan, jawaban, divId); // Wait for gpt3() to finish before proceeding
         } catch (error) {
           console.error(error);
         }
       }
     },
 
-    gpt3(pertanyaan, jawaban) {
+    gpt3(pertanyaan, jawaban, divId) {
       return new Promise((resolve, reject) => {
         fetch("/api/gpt3", {
           method: "POST",
@@ -134,9 +137,11 @@ export default {
 
             const result = data.result;
             // Regular expressions to extract the values
-            const scoreRegex = /score: (\d+)/;
-            const correctionRegex = /correction: ([^ ]+)/;
-            const confidenceRegex = /confidence score: (\d+%)/;
+
+
+            const scoreRegex = /score:\s+(\d+)/;
+            const correctionRegex = /correction:\s+(.*)\s+confidence score:/;
+            const confidenceRegex = /confidence score:\s+(\d+%)/;
 
             // Function to extract the value using regex
             const extractValue = (regex, input) => {
@@ -150,9 +155,39 @@ export default {
             const confidenceScore = extractValue(confidenceRegex, result);
 
             // Logging the values
+            console.log("Index:", divId);
             console.log("Score:", score);
             console.log("Correction:", correction);
             console.log("Confidence Score:", confidenceScore);
+
+            // shows it
+            // Step 1: Find the element with class "jawaban"
+            const jawabanElement = document.querySelector('.jawaban-' + divId);
+
+            if (jawabanElement) {
+              const h1ScoreElement = document.createElement('h1');
+              h1ScoreElement.textContent = 'Score: ' + score + '/10';
+              h1ScoreElement.style.color = 'Red';
+              h1ScoreElement.classList.add('score-class'); // Add class name 'score-class'
+
+              const h1CorrectionElement = document.createElement('h1');
+              h1CorrectionElement.textContent = 'Correction: ' + correction;
+              h1CorrectionElement.style.color = 'Green';
+              h1CorrectionElement.classList.add('correction-class'); // Add class name 'correction-class'
+
+              const h2ConfidenceScoreElement = document.createElement('h2');
+              h2ConfidenceScoreElement.textContent = 'Accurate: ' + confidenceScore;
+              h2ConfidenceScoreElement.style.color = 'blue';
+              h2ConfidenceScoreElement.classList.add('confidence-class'); // Add class name 'confidence-class'
+
+              jawabanElement.insertAdjacentElement('afterend', h2ConfidenceScoreElement);
+              jawabanElement.insertAdjacentElement('afterend', h1CorrectionElement);
+              jawabanElement.insertAdjacentElement('afterend', h1ScoreElement);
+
+
+
+            }
+
 
             // You can handle the data here or store it in the component's data or state as needed.
 
@@ -162,6 +197,17 @@ export default {
             reject(error);
           });
       });
+    },
+
+    removeDetailClasses() {
+      // Access the DOM elements using querySelectorAll and remove the classes
+      const scoreElements = document.querySelectorAll('.score-class');
+      const correctionElements = document.querySelectorAll('.correction-class');
+      const confidenceElements = document.querySelectorAll('.confidence-class');
+
+      scoreElements.forEach((element) => element.remove());
+      correctionElements.forEach((element) => element.remove());
+      confidenceElements.forEach((element) => element.remove());
     },
 
   },
