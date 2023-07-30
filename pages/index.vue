@@ -1,4 +1,5 @@
 <template>
+  <Tab/>
   <div>
     <div v-if="loading" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
       <button disabled type="button"
@@ -16,7 +17,7 @@
       </button>
     </div>
     <section class="bg-white dark:bg-gray-900">
-      <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16">
+      <div class="max-w-screen-xl mx-auto">
         <div class="p-8 mb-8 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 md:p-12">
           <a href="#"
             class="bg-blue-100 text-blue-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400 mb-4">
@@ -131,6 +132,9 @@ definePageMeta({
   layout: "nav",
 });
 export default {
+  head: {
+      title: 'ROAST',
+    },
   data() {
     return {
       textAreaEssay: null,
