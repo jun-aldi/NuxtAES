@@ -19,5 +19,4 @@
   </nav>
   <slot/>
 </div>
-
 </template>
