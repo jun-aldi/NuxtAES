@@ -1,7 +1,5 @@
 <template>
-  <div>
-
-  </div>
+  <div></div>
 
   <div>
     <section class="bg-white dark:bg-gray-900">
@@ -129,11 +127,9 @@
             </svg>
             Raw Response
           </a>
-          <p
-              class="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400"
-            >
-              {{ result }}
-            </p>
+          <p class="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+            {{ result }}
+          </p>
         </div>
       </div>
     </section>
@@ -154,7 +150,6 @@ export default {
       score: "",
       correction: "",
       confidenceScore: "",
-
     };
   },
   methods: {
@@ -183,8 +178,11 @@ export default {
           this.result = data.result;
           this.score = this.result.split("\n")[0].split(":")[1].trim();
           this.correction = this.result.split("\n")[1].split(":")[1].trim();
-          this.confidenceScore = this.result.split("\n")[2].split(":")[1].trim();
-        
+          this.confidenceScore = this.result
+            .split("\n")[2]
+            .split(":")[1]
+            .trim();
+
           console.log(this.score); // Output: 8
           console.log(this.correction); // Output: Tidak ada kesalahan dalam jawaban tersebut.
           console.log(this.confidenceScore); // Output: 90%

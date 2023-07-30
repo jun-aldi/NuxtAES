@@ -4,7 +4,11 @@
     <input type="file" @change="parseFile" ref="myFileUpload" />
     <table>
       <tr>
-        <th v-for="(field, index) in visibleFields" :key="index" class="min-w-min">
+        <th
+          v-for="(field, index) in visibleFields"
+          :key="index"
+          class="min-w-min"
+        >
           <label :for="'selectableField' + field.column">
             <br />
             {{ field.cellName }}
@@ -24,13 +28,14 @@
     <div v-if="selectedUser">
       <h2>User Details</h2>
       <div v-for="(value, key, index) in selectedUser" :key="index">
-        <template v-if="index <= 3"> <!-- Show columns after the third column -->
+        <template v-if="index <= 3">
+          <!-- Show columns after the third column -->
           <strong>{{ key }}:</strong> {{ value }}
         </template>
         <template v-if="index >= 4">
           <div :id="index" class="aes">
             <h1>Pertanyaan</h1>
-            <p :class="'pertanyaan-' + index" style="color: red;">{{ key }}</p>
+            <p :class="'pertanyaan-' + index" style="color: red">{{ key }}</p>
             <!-- Show columns after the third column -->
             <p>Jawaban</p>
             <textarea :class="'jawaban-' + index">{{ value }}</textarea>
@@ -39,11 +44,10 @@
       </div>
       <button @click="processGpt3">Nilai</button>
     </div>
-
   </div>
 </template>
 <script>
-import Papa from 'papaparse';
+import Papa from "papaparse";
 export default {
   data() {
     return {
@@ -56,13 +60,13 @@ export default {
 
       //csv
       userRows: [],
-      message: 'Multiple AES with CSV',
-      file: '',
-      results: '',
+      message: "Multiple AES with CSV",
+      file: "",
+      results: "",
       fields: [],
       config: {
-        delimiter: '',
-        newline: '',
+        delimiter: "",
+        newline: "",
         quoteChar: '"',
         escapeChar: '"',
         // preview: 11,
@@ -75,14 +79,14 @@ export default {
   },
   methods: {
     displayCompleteFile(results, file) {
-      console.log('Completed File', results, file);
+      console.log("Completed File", results, file);
       this.userRows = results.data;
       let fields = results.meta.fields;
       this.fields = fields.map((x, indx) => {
         return {
           column: indx,
           cellName: x,
-          assignedValue: '',
+          assignedValue: "",
         };
       });
       this.visibleFields = this.fields.slice(0, 3); // Display the first three columns initially
@@ -100,7 +104,9 @@ export default {
       const aesDivs = document.querySelectorAll(".aes");
       for (const div of aesDivs) {
         const divId = div.id;
-        const pertanyaan = div.querySelector(`.pertanyaan-${div.id}`).textContent;
+        const pertanyaan = div.querySelector(
+          `.pertanyaan-${div.id}`
+        ).textContent;
         const jawaban = div.querySelector(`.jawaban-${div.id}`).textContent;
 
         try {
@@ -138,7 +144,6 @@ export default {
             const result = data.result;
             // Regular expressions to extract the values
 
-
             const scoreRegex = /score:\s+(\d+)/;
             const correctionRegex = /correction:\s+(.*)\s+confidence score:/;
             const confidenceRegex = /confidence score:\s+(\d+%)/;
@@ -162,32 +167,35 @@ export default {
 
             // shows it
             // Step 1: Find the element with class "jawaban"
-            const jawabanElement = document.querySelector('.jawaban-' + divId);
+            const jawabanElement = document.querySelector(".jawaban-" + divId);
 
             if (jawabanElement) {
-              const h1ScoreElement = document.createElement('h1');
-              h1ScoreElement.textContent = 'Score: ' + score + '/10';
-              h1ScoreElement.style.color = 'Red';
-              h1ScoreElement.classList.add('score-class'); // Add class name 'score-class'
+              const h1ScoreElement = document.createElement("h1");
+              h1ScoreElement.textContent = "Score: " + score + "/10";
+              h1ScoreElement.style.color = "Red";
+              h1ScoreElement.classList.add("score-class"); // Add class name 'score-class'
 
-              const h1CorrectionElement = document.createElement('h1');
-              h1CorrectionElement.textContent = 'Correction: ' + correction;
-              h1CorrectionElement.style.color = 'Green';
-              h1CorrectionElement.classList.add('correction-class'); // Add class name 'correction-class'
+              const h1CorrectionElement = document.createElement("h1");
+              h1CorrectionElement.textContent = "Correction: " + correction;
+              h1CorrectionElement.style.color = "Green";
+              h1CorrectionElement.classList.add("correction-class"); // Add class name 'correction-class'
 
-              const h2ConfidenceScoreElement = document.createElement('h2');
-              h2ConfidenceScoreElement.textContent = 'Accurate: ' + confidenceScore;
-              h2ConfidenceScoreElement.style.color = 'blue';
-              h2ConfidenceScoreElement.classList.add('confidence-class'); // Add class name 'confidence-class'
+              const h2ConfidenceScoreElement = document.createElement("h2");
+              h2ConfidenceScoreElement.textContent =
+                "Accurate: " + confidenceScore;
+              h2ConfidenceScoreElement.style.color = "blue";
+              h2ConfidenceScoreElement.classList.add("confidence-class"); // Add class name 'confidence-class'
 
-              jawabanElement.insertAdjacentElement('afterend', h2ConfidenceScoreElement);
-              jawabanElement.insertAdjacentElement('afterend', h1CorrectionElement);
-              jawabanElement.insertAdjacentElement('afterend', h1ScoreElement);
-
-
-
+              jawabanElement.insertAdjacentElement(
+                "afterend",
+                h2ConfidenceScoreElement
+              );
+              jawabanElement.insertAdjacentElement(
+                "afterend",
+                h1CorrectionElement
+              );
+              jawabanElement.insertAdjacentElement("afterend", h1ScoreElement);
             }
-
 
             // You can handle the data here or store it in the component's data or state as needed.
 
@@ -201,15 +209,14 @@ export default {
 
     removeDetailClasses() {
       // Access the DOM elements using querySelectorAll and remove the classes
-      const scoreElements = document.querySelectorAll('.score-class');
-      const correctionElements = document.querySelectorAll('.correction-class');
-      const confidenceElements = document.querySelectorAll('.confidence-class');
+      const scoreElements = document.querySelectorAll(".score-class");
+      const correctionElements = document.querySelectorAll(".correction-class");
+      const confidenceElements = document.querySelectorAll(".confidence-class");
 
       scoreElements.forEach((element) => element.remove());
       correctionElements.forEach((element) => element.remove());
       confidenceElements.forEach((element) => element.remove());
     },
-
   },
 };
 </script>
