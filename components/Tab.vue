@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-screen-xl mx-auto lg:py-16">
+  <div class="max-w-screen-xl p-8 mx-auto lg:py-16">
     <ul
       class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400"
     >

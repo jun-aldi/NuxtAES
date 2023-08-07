@@ -130,11 +130,16 @@
 import { initFlowbite } from 'flowbite'
 definePageMeta({
   layout: "nav",
+  title: 'My App',
+  meta: [
+    { name: 'description', content: 'My amazing site.' }
+  ],
+  bodyAttrs: {
+    class: 'test'
+  },
+  script: [ { innerHTML: 'console.log(\'Hello world\')' } ]
 });
 export default {
-  head: {
-      title: 'ROAST',
-    },
   data() {
     return {
       textAreaEssay: null,
