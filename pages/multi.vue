@@ -2,7 +2,7 @@
   <div>
     <Tab />
     <section class="bg-white dark:bg-gray-900">
-      <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16">
+      <div class="max-w-screen-xl py-8 mx-auto lg:py-16">
         <div
           class="p-8 mb-8 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700 md:p-12"
         >

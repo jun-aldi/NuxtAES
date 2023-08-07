@@ -1,23 +1,44 @@
 <template>
-  <div class="max-w-screen-xl p-8 mx-auto lg:py-16">
-    <ul
-      class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400"
-    >
+  <div :class="{ 'bg-blue-300': thi }" class="max-w-screen-xl p-2 mx-auto lg:py-16">
+    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
       <li class="mr-2">
-        <a
-          href="#"
-          class="inline-block px-4 py-3 text-white bg-blue-600 rounded-lg active"
-          aria-current="page"
-          >Single AES</a
-        >
+        <NuxtLink :to="{ name: 'index' }" class="inline-block px-4 py-3 text-sm border border-gray-200 rounded-lg hover:text-white hover:bg-blue-600">
+          Single AES
+        </NuxtLink>
       </li>
       <li class="mr-2">
-        <a
-          href="#"
-          class="inline-block px-4 py-3 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white"
-          >Multi AES</a
-        >
+        <NuxtLink :to="{ name: 'multi' }" class="inline-block px-4 py-3 text-sm border border-gray-200 rounded-lg hover:text-white hover:bg-blue-600">
+          Multi AES
+        </NuxtLink>
       </li>
     </ul>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      thi: false, // Set this to true to activate the blue background
+    };
+  },
+};
+</script>
+
+<style scoped>
+.router-link-active {
+  @apply bg-blue-600 text-white font-bold;
+}
+.router-link-active:hover {
+  @apply bg-blue-600 font-medium;
+}
+</style>
+// or
+<style>
+.my-link.router-link-active {
+  @apply bg-blue-600 font-bold;
+}
+.my-link.router-link-active:hover {
+  @apply bg-blue-600 font-medium;
+}
+</style>
