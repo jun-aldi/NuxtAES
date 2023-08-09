@@ -27,7 +27,7 @@
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table
-            class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+            class="w-full text-sm text-left text-gray-500 border border-collapse dark:text-gray-400 "
           >
             <thead
               class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
@@ -37,12 +37,13 @@
                   v-for="(field, index) in visibleFields"
                   :key="index"
                   scope="col"
-                  class="px-6 py-3 min-w-min"
+                  class="px-6 py-3 border cursor-pointer min-w-min hover:text-white hover:bg-blue-600"
+                  @click="sortTable(field.cellName)"
                 >
                   <label :for="'selectableField' + field.column">
                     <br />
-                    {{ field.cellName }}
-                  </label>
+                    {{ field.cellName }} &nbsp;
+                  </label><span>&#8593;</span><span>&#8595;</span>
                 </th>
                 <template v-if="csvLoaded">
                   <th class="px-6 py-3 min-w-min" scope="col">
@@ -117,84 +118,83 @@
       </button>
     </div>
     <div
-    
       class="w-full max-w-4xl p-8 mb-8 overflow-hidden bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 md:p-12"
     >
       <!-- Display user details in the modal -->
       <h2 class="mb-4 text-xl font-semibold">Student Details</h2>
       <div
-        class="overflow-y-auto border bg-gray-50 max-h-96 border-grey-500 print-content" id="element-to-print"
-        
+        class="overflow-y-auto border bg-gray-50 max-h-96 border-grey-500 print-content"
+        id="element-to-print"
       >
-      <div ref="content" class="p-4">
-        <div class="border-b border-grey-200">
-          <!-- Show columns up to the third column -->
-          <div class="flex justify-between mb-2">
-            <strong class="text-red-500">Total Nilai: </strong>
-            <span class="font-bold">{{ avarage_score }}</span>
+        <div ref="content" class="p-4">
+          <div class="border-b border-grey-200">
+            <!-- Show columns up to the third column -->
+            <div class="flex justify-between mb-2">
+              <strong class="text-red-500">Total Nilai: </strong>
+              <span class="font-bold">{{ avarage_score }}</span>
+            </div>
           </div>
-        </div>
-        <div v-for="(value, key, index) in selectedUser" :key="index">
-          <div class="border-b border-grey-200" :id="key">
-            <template v-if="index <= 3">
-              <!-- Show columns up to the third column -->
-              <div class="flex justify-between mb-2">
-                <strong class="text-gray-600">{{ key }}:</strong>
-                <span>{{ value }}</span>
+          <div v-for="(value, key, index) in selectedUser" :key="index">
+            <div class="border-b border-grey-200" :id="key">
+              <template v-if="index <= 3">
+                <!-- Show columns up to the third column -->
+                <div class="flex justify-between mb-2">
+                  <strong class="text-gray-600">{{ key }}:</strong>
+                  <span>{{ value }}</span>
+                </div>
+              </template>
+            </div>
+            <template v-if="index >= 4">
+              <div :id="index" class="mb-4 aes">
+                <a
+                  class="mt-4 mb-4 bg-blue-100 text-blue-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400"
+                >
+                  <svg
+                    class="w-3 h-3 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
+                    ></path>
+                  </svg>
+                  Pertanyaan
+                </a>
+                <p :class="'pertanyaan-' + index + ''">{{ key }}</p>
+                <!-- Show columns after the third column -->
+                <a
+                  class="mt-4 mb-4 bg-green-100 text-green-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400"
+                >
+                  <svg
+                    class="w-3 h-3 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      fill-rule="evenodd"
+                      d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  Jawaban</a
+                >
+                <p
+                  :class="'jawaban-' +
+                    index +
+                    ' w-full p-2 rounded-md border border-gray-300 mb-4'
+                  "
+                  rows="4"
+                >
+                  {{ value }}
+                </p>
               </div>
             </template>
           </div>
-          <template v-if="index >= 4">
-            <div :id="index" class="mb-4 aes">
-              <a
-                class="mt-4 mb-4 bg-blue-100 text-blue-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400"
-              >
-                <svg
-                  class="w-3 h-3 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
-                  ></path>
-                </svg>
-                Pertanyaan
-              </a>
-              <p :class="'pertanyaan-' + index + ''">{{ key }}</p>
-              <!-- Show columns after the third column -->
-              <a
-                class="mt-4 mb-4 bg-green-100 text-green-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400"
-              >
-                <svg
-                  class="w-3 h-3 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
-                    d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
-                  ></path>
-                </svg>
-                Jawaban</a
-              >
-              <p
-                :class="'jawaban-' +
-                  index +
-                  ' w-full p-2 rounded-md border border-gray-300'
-                "
-                rows="4"
-                >{{ value }}</p
-              >
-            </div>
-          </template>
         </div>
-      </div>
-
       </div>
       <button
         @click="processGpt3"
@@ -224,6 +224,7 @@
 import Papa from "papaparse";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import _ from "lodash";
 // import html2pdf from "html2pdf.js";
 
 definePageMeta({
@@ -232,6 +233,9 @@ definePageMeta({
 export default {
   data() {
     return {
+      sortColumn: "",
+      sortDirection: "asc", // or 'desc'
+
       isLoading: false,
       csvLoaded: false,
 
@@ -302,6 +306,7 @@ export default {
 
     async processGpt3() {
       this.removeDetailClasses();
+      this.resetScore();
       const aesDivs = document.querySelectorAll(".aes");
       for (const div of aesDivs) {
         const divId = div.id;
@@ -384,6 +389,7 @@ export default {
               const h1ScoreElement = document.createElement("h1");
               h1ScoreElement.textContent = "Score: " + score + "/100";
               h1ScoreElement.style.fontWeight = "bold";
+              h1ScoreElement.style.color = "Red";
               h1ScoreElement.classList.add("score-class"); // Add class name 'score-class'
 
               const h1CorrectionElement = document.createElement("h1");
@@ -440,22 +446,32 @@ export default {
 
     exportToPDF() {
       const modalContent = this.$refs.content;
-  html2canvas(modalContent).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
+      html2canvas(modalContent).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
 
-    const pdfWidth = 200; // Width in inches
-    const pdfHeight = (pdfWidth * canvas.height) / canvas.width; // Calculate height
+        const pdfWidth = 200; // Width in inches
+        const pdfHeight = (pdfWidth * canvas.height) / canvas.width; // Calculate height
 
-    const pdf = new jsPDF({
-      format: [pdfWidth, pdfHeight], // Set the PDF size
-    });
+        const pdf = new jsPDF({
+          format: [pdfWidth, pdfHeight], // Set the PDF size
+        });
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
-    pdf.save("exported_content.pdf");
-  });
-}
+        pdf.save("exported_content.pdf");
+      });
+    },
 
+    sortTable(column) {
+      if (this.sortColumn === column) {
+        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        this.sortColumn = column;
+        this.sortDirection = "asc";
+      }
+
+      this.userRows = _.orderBy(this.userRows, [column], [this.sortDirection]);
+    },
   },
 };
 </script>
