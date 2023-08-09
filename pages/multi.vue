@@ -84,6 +84,7 @@
   <div
     v-if="selectedUser"
     class="fixed inset-0 z-10 flex items-center justify-center w-screen h-screen bg-black bg-opacity-50"
+    id="element-to-convert"
   >
     <!-- Loading Animation -->
     <div
@@ -116,15 +117,25 @@
       </button>
     </div>
     <div
+    
       class="w-full max-w-4xl p-8 mb-8 overflow-hidden bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 md:p-12"
     >
       <!-- Display user details in the modal -->
       <h2 class="mb-4 text-xl font-semibold">Student Details</h2>
       <div
-        class="p-4 overflow-y-auto border bg-gray-50 max-h-96 border-grey-500"
+        class="overflow-y-auto border bg-gray-50 max-h-96 border-grey-500 print-content" id="element-to-print"
+        
       >
+      <div ref="content" class="p-4">
+        <div class="border-b border-grey-200">
+          <!-- Show columns up to the third column -->
+          <div class="flex justify-between mb-2">
+            <strong class="text-red-500">Total Nilai: </strong>
+            <span class="font-bold">{{ avarage_score }}</span>
+          </div>
+        </div>
         <div v-for="(value, key, index) in selectedUser" :key="index">
-          <div class="border-b border-grey-200">
+          <div class="border-b border-grey-200" :id="key">
             <template v-if="index <= 3">
               <!-- Show columns up to the third column -->
               <div class="flex justify-between mb-2">
@@ -133,7 +144,6 @@
               </div>
             </template>
           </div>
-
           <template v-if="index >= 4">
             <div :id="index" class="mb-4 aes">
               <a
@@ -172,17 +182,19 @@
                 </svg>
                 Jawaban</a
               >
-              <textarea
+              <p
                 :class="'jawaban-' +
                   index +
                   ' w-full p-2 rounded-md border border-gray-300'
                 "
                 rows="4"
-                >{{ value }}</textarea
+                >{{ value }}</p
               >
             </div>
           </template>
         </div>
+      </div>
+
       </div>
       <button
         @click="processGpt3"
@@ -193,15 +205,27 @@
       <!-- Close button -->
       <button
         @click="selectedUser = null"
-        class="px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:ring-red-300"
+        class="px-4 py-2 mt-4 mr-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-700 focus:outline-none focus:ring focus:ring-red-300"
       >
         Close
+      </button>
+
+      <!-- PDF button -->
+      <button
+        @click="exportToPDF"
+        class="px-4 py-2 mt-4 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300"
+      >
+        Export PDF
       </button>
     </div>
   </div>
 </template>
 <script>
 import Papa from "papaparse";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+// import html2pdf from "html2pdf.js";
+
 definePageMeta({
   layout: "nav",
 });
@@ -210,6 +234,12 @@ export default {
     return {
       isLoading: false,
       csvLoaded: false,
+
+      total_score: 0,
+      total_soal: 0,
+      avarage_score: 0,
+
+      student_name: null,
 
       //aes
       results: "",
@@ -267,6 +297,7 @@ export default {
     showModal(user) {
       this.selectedUser = user;
       this.removeDetailClasses();
+      this.resetScore();
     },
 
     async processGpt3() {
@@ -296,7 +327,7 @@ export default {
           },
           body: JSON.stringify({
             textGPT:
-              "You are a teacher for High School. I would like you to score an ANSWER written in Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
+              "You are a teacher for High School. I would like you to score an ANSWER written in Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
               pertanyaan +
               " --QUESTION-- " +
               " \n--ANSWER-- " +
@@ -335,13 +366,23 @@ export default {
             console.log("Correction:", correction);
             console.log("Confidence Score:", confidenceScore);
 
+            //increment score and soal
+            this.total_score += parseInt(score);
+            this.total_soal += 1;
+            if (this.total_soal === 0) {
+              this.avarage_score = 0; // Avoid division by zero
+            } else this.avarage_score = this.total_score / this.total_soal;
+            this.avarage_score = Math.round(this.avarage_score);
+
+            console.log("Avarage Score: ", this.avarage_score);
+
             // shows it
             // Step 1: Find the element with class "jawaban"
             const jawabanElement = document.querySelector(".jawaban-" + divId);
 
             if (jawabanElement) {
               const h1ScoreElement = document.createElement("h1");
-              h1ScoreElement.textContent = "Score: " + score + "/10";
+              h1ScoreElement.textContent = "Score: " + score + "/100";
               h1ScoreElement.style.fontWeight = "bold";
               h1ScoreElement.classList.add("score-class"); // Add class name 'score-class'
 
@@ -389,6 +430,32 @@ export default {
       correctionElements.forEach((element) => element.remove());
       confidenceElements.forEach((element) => element.remove());
     },
+
+    resetScore() {
+      this.total_score = 0;
+      this.total_soal = 0;
+      this.avarage_score = 0;
+      this.student_name = null;
+    },
+
+    exportToPDF() {
+      const modalContent = this.$refs.content;
+  html2canvas(modalContent).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdfWidth = 200; // Width in inches
+    const pdfHeight = (pdfWidth * canvas.height) / canvas.width; // Calculate height
+
+    const pdf = new jsPDF({
+      format: [pdfWidth, pdfHeight], // Set the PDF size
+    });
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+    pdf.save("exported_content.pdf");
+  });
+}
+
   },
 };
 </script>

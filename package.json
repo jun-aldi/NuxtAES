@@ -17,7 +17,12 @@
   },
   "dependencies": {
     "flowbite": "^1.7.0",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.1",
+    "jspdf": "^2.5.1",
+    "nuxt-pdfeasy": "^1.4.0",
     "openai": "^3.2.0",
-    "papaparse": "^5.4.1"
+    "papaparse": "^5.4.1",
+    "vue-html2pdf": "^1.8.0"
   }
 }
