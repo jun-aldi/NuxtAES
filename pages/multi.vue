@@ -25,9 +25,22 @@
           />
           <h1 v-if="!csv" class="text-red-500">Bukan file .csv!</h1>
         </div>
+        <div class="flex md:flex md:flex-grow flex-row justify-end mb-4">
+          <button
+            @click="nilaiSemua"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+          >
+            Nilai Semua
+          </button>
+          <button
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Export EXCEL
+          </button>
+        </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table
-            class="w-full text-sm text-left text-gray-500 border border-collapse dark:text-gray-400 "
+            class="w-full text-sm text-left text-gray-500 border border-collapse dark:text-gray-400"
           >
             <thead
               class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
@@ -42,10 +55,12 @@
                 >
                   <label :for="'selectableField' + field.column">
                     <br />
-                    {{ field.cellName }} &nbsp;
-                  </label><span>&#8593;</span><span>&#8595;</span>
+                    {{ field.cellName }} &nbsp; </label
+                  ><span>&#8593;</span><span>&#8595;</span>
                 </th>
+
                 <template v-if="csvLoaded">
+                  <th scope="col" class="px-6 py-3 ...">Total Score</th>
                   <th class="px-6 py-3 min-w-min" scope="col">
                     <label for="">Actions</label>
                   </th>
@@ -64,6 +79,39 @@
                   :key="index"
                 >
                   {{ user[field.cellName] }}
+                </td>
+                <td class="px-6 py-4">
+                  <!-- Display loading animation when isLoading is true -->
+                  <template v-if="user.isLoadingCols">
+                    <button
+                      disabled
+                      type="button"
+                      class="py-2.5 px-5 mr-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        role="status"
+                        class="inline w-4 h-4 mr-3 text-gray-200 animate-spin dark:text-gray-600"
+                        viewBox="0 0 100 101"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="#1C64F2"
+                        />
+                      </svg>
+                      Sedang Menilai
+                    </button>
+                  </template>
+                  <!-- Display user's total score when isLoading is false -->
+                  <template v-else>
+                    {{ user["Total Score"] }}
+                  </template>
                 </td>
                 <td class="px-6 py-4">
                   <button
@@ -131,7 +179,9 @@
             <!-- Show columns up to the third column -->
             <div class="flex justify-between mb-2">
               <strong class="text-red-500">Total Nilai: </strong>
-              <span class="font-bold">{{ avarage_score }}</span>
+              <span class="font-bold total_score">{{
+                selectedUser["Total Score"]
+              }}</span>
             </div>
           </div>
           <div v-for="(value, key, index) in selectedUser" :key="index">
@@ -145,7 +195,7 @@
               </template>
             </div>
             <template v-if="index >= 4">
-              <div :id="index" class="mb-4 aes">
+              <div v-if="key !== 'Total Score' && key !=='isLoadingCols'" :id="index" class="mb-4 aes">
                 <a
                   class="mt-4 mb-4 bg-blue-100 text-blue-800 text-xl font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-blue-400"
                 >
@@ -183,25 +233,31 @@
                   Jawaban</a
                 >
                 <p
-                  :class="'jawaban-' +
+                  :class="
+                    'jawaban-' +
                     index +
                     ' w-full p-2 rounded-md border border-gray-300 mb-4'
                   "
                   rows="4"
                 >
-                  {{ value }}
+                  {{ value.jawaban }}
+                </p>
+                <p class="text-red">Score : {{ value.score }}</p>
+                <p class="text-green">Koreksi : {{ value.correction }}</p>
+                <p class="text-blue">
+                  Akurasi Sistem : {{ value.confidancescore }}
                 </p>
               </div>
             </template>
           </div>
         </div>
       </div>
-      <button
+      <!-- <button
         @click="processGpt3"
         class="px-4 py-2 mt-4 mr-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
       >
         Nilai
-      </button>
+      </button> -->
       <!-- Close button -->
       <button
         @click="selectedUser = null"
@@ -233,6 +289,7 @@ definePageMeta({
 export default {
   data() {
     return {
+      isLoadingCols: false,
       sortColumn: "",
       sortDirection: "asc", // or 'desc'
 
@@ -366,58 +423,62 @@ export default {
             const confidenceScore = extractValue(confidenceRegex, result);
             this.isLoading = false;
             // Logging the values
-            console.log("Index:", divId);
-            console.log("Score:", score);
-            console.log("Correction:", correction);
-            console.log("Confidence Score:", confidenceScore);
+            // console.log("Index:", divId);
+            // console.log("Score:", score);
+            // console.log("Correction:", correction);
+            // console.log("Confidence Score:", confidenceScore);
 
-            //increment score and soal
-            this.total_score += parseInt(score);
-            this.total_soal += 1;
-            if (this.total_soal === 0) {
-              this.avarage_score = 0; // Avoid division by zero
-            } else this.avarage_score = this.total_score / this.total_soal;
-            this.avarage_score = Math.round(this.avarage_score);
+            // //increment score and soal
+            // this.total_score += parseInt(score);
+            // this.total_soal += 1;
+            // if (this.total_soal === 0) {
+            //   this.avarage_score = 0; // Avoid division by zero
+            // } else this.avarage_score = this.total_score / this.total_soal;
+            // this.avarage_score = Math.round(this.avarage_score);
 
-            console.log("Avarage Score: ", this.avarage_score);
+            // console.log("Avarage Score: ", this.avarage_score);
 
-            // shows it
-            // Step 1: Find the element with class "jawaban"
-            const jawabanElement = document.querySelector(".jawaban-" + divId);
+            // // shows it
+            // // Step 1: Find the element with class "jawaban"
+            // const jawabanElement = document.querySelector(".jawaban-" + divId);
 
-            if (jawabanElement) {
-              const h1ScoreElement = document.createElement("h1");
-              h1ScoreElement.textContent = "Score: " + score + "/100";
-              h1ScoreElement.style.fontWeight = "bold";
-              h1ScoreElement.style.color = "Red";
-              h1ScoreElement.classList.add("score-class"); // Add class name 'score-class'
+            // if (jawabanElement) {
+            //   const h1ScoreElement = document.createElement("h1");
+            //   h1ScoreElement.textContent = "Score: " + score + "/100";
+            //   h1ScoreElement.style.fontWeight = "bold";
+            //   h1ScoreElement.style.color = "Red";
+            //   h1ScoreElement.classList.add("score-class"); // Add class name 'score-class'
 
-              const h1CorrectionElement = document.createElement("h1");
-              h1CorrectionElement.textContent = "Koreksi: " + correction;
-              h1CorrectionElement.style.color = "Green";
-              h1CorrectionElement.classList.add("correction-class"); // Add class name 'correction-class'
+            //   const h1CorrectionElement = document.createElement("h1");
+            //   h1CorrectionElement.textContent = "Koreksi: " + correction;
+            //   h1CorrectionElement.style.color = "Green";
+            //   h1CorrectionElement.classList.add("correction-class"); // Add class name 'correction-class'
 
-              const h2ConfidenceScoreElement = document.createElement("h2");
-              h2ConfidenceScoreElement.textContent =
-                "Tingkat Akurasi: " + confidenceScore;
-              h2ConfidenceScoreElement.style.color = "blue";
-              h2ConfidenceScoreElement.style.fontWeight = "lighter";
-              h2ConfidenceScoreElement.classList.add("confidence-class"); // Add class name 'confidence-class'
+            //   const h2ConfidenceScoreElement = document.createElement("h2");
+            //   h2ConfidenceScoreElement.textContent =
+            //     "Tingkat Akurasi: " + confidenceScore;
+            //   h2ConfidenceScoreElement.style.color = "blue";
+            //   h2ConfidenceScoreElement.style.fontWeight = "lighter";
+            //   h2ConfidenceScoreElement.classList.add("confidence-class"); // Add class name 'confidence-class'
 
-              jawabanElement.insertAdjacentElement(
-                "afterend",
-                h2ConfidenceScoreElement
-              );
-              jawabanElement.insertAdjacentElement(
-                "afterend",
-                h1CorrectionElement
-              );
-              jawabanElement.insertAdjacentElement("afterend", h1ScoreElement);
-            }
+            //   jawabanElement.insertAdjacentElement(
+            //     "afterend",
+            //     h2ConfidenceScoreElement
+            //   );
+            //   jawabanElement.insertAdjacentElement(
+            //     "afterend",
+            //     h1CorrectionElement
+            //   );
+            //   jawabanElement.insertAdjacentElement("afterend", h1ScoreElement);
+            // }
 
             // You can handle the data here or store it in the component's data or state as needed.
 
-            resolve(); // Resolve the promise once processing is done
+            resolve({
+              score,
+              correction,
+              confidenceScore,
+            }); // Resolve the promise once processing is done
           })
           .catch((error) => {
             console.error(error);
@@ -471,6 +532,85 @@ export default {
       }
 
       this.userRows = _.orderBy(this.userRows, [column], [this.sortDirection]);
+    },
+    async nilaiSemua() {
+      for (const user of this.userRows) {
+        const userData = {
+          Timestamp: user.timestamp,
+          "Nama Lengkap": user.nama,
+          "No Absen": user.no_absen,
+          Kelas: user.kelas,
+        };
+
+        let totalScore = 0;
+        let totalEssays = 0;
+
+        let pertanyaan = ""; // Define pertanyaan outside the loop
+
+        for (const field of this.fields) {
+          if (field.column > 3) {
+            pertanyaan = field.cellName;
+            const jawaban = user[pertanyaan];
+
+            try {
+              user.isLoadingCols = true;
+              const result = await this.gpt3(pertanyaan, jawaban);
+
+              const essaiData = {
+                pertanyaan: pertanyaan,
+                jawaban: jawaban,
+                score: result.score,
+                correction: result.correction,
+                confidancescore: result.confidenceScore,
+              };
+
+              user[pertanyaan] = essaiData; // Update user's answer with detailed data
+              userData[pertanyaan] = essaiData; // Update userData with essaiData
+
+              totalScore += parseFloat(result.score);
+              totalEssays++;
+              user.isLoadingCols = false;
+            } catch (error) {
+              console.error(error);
+              user.isLoadingCols = false;
+            }
+          }
+        }
+
+        if (totalEssays > 0) {
+          const averageScore = totalScore / totalEssays;
+          userData["Total Score"] = averageScore.toFixed(2);
+
+          // Find the index of the user in the userRows array
+          const userIndex = this.userRows.findIndex((item) => item === user);
+
+          if (userIndex !== -1) {
+            // Update the user's data in the userRows array
+            this.userRows[userIndex] = {
+              ...user,
+              "Total Score": averageScore.toFixed(2),
+            };
+          } // Add average score to userData
+
+          // Attach detailed scores and total score to user object
+          user.detailedScores = {
+            scores: user[pertanyaan], // Use the correct data property here
+            totalScore: averageScore.toFixed(2),
+          };
+
+          // Update the selectedUser object if it matches the user being processed
+          if (this.selectedUser === user) {
+            this.selectedUser.detailedScores = {
+              scores: user[pertanyaan], // Use the correct data property here
+              totalScore: averageScore.toFixed(2),
+            };
+          }
+        } else {
+          userData["Total Score"] = "N/A"; // No essays were processed
+        }
+
+        console.log(JSON.stringify(userData, null, 4));
+      }
     },
   },
 };
