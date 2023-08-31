@@ -372,7 +372,7 @@ export default {
       const worksheet = XLSX.utils.json_to_sheet(excelData);
 
       // Append the worksheet to the workbook
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'User Data');
+      XLSX.utils.book_append_sheet(workbook, worksheet, this.test_name);
 
       // Save the workbook to a file
       const excelFileName = this.pelajaran + this.test_name +".xlsx";
