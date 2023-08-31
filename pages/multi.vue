@@ -188,13 +188,13 @@
         <div ref="content" class="p-4">
           <div class="border-b border-grey-200">
             <!-- Show columns up to the third column -->
-            <div class="flex justify-between mb-2">
+            <div class="flex justify-between mb-2 border-b border-grey-200">
               <strong class="text-blue-500">Mata Pelajaran: </strong>
               <span class="font-bold total_score">{{
                 pelajaran
               }}</span>
             </div>
-            <div class="flex justify-between mb-2">
+            <div class="flex justify-between mb-2 border-b border-grey-200">
               <strong class="text-blue-500">Nama Test: </strong>
               <span class="font-bold total_score">{{
                 test_name
