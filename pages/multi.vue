@@ -25,6 +25,17 @@
           />
           <h1 v-if="!csv" class="text-red-500">Bukan file .csv!</h1>
         </div>
+            <!-- Add the form above the "Nilai Semua" button -->
+    <div class="flex md:flex md:flex-grow flex-row mb-4">
+      <div class="flex items-center">
+        <label class="mr-2">Mata Pelajaran:</label>
+        <input v-model="pelajaran" class="border rounded px-2 py-1" />
+      </div>
+      <div class="flex items-center ml-4">
+        <label class="mr-2">Test:</label>
+        <input v-model="test_name" class="border rounded px-2 py-1" />
+      </div>
+    </div>
         <div class="flex md:flex md:flex-grow flex-row justify-end mb-4">
           <button
             @click="nilaiSemua"
@@ -32,7 +43,7 @@
           >
             Nilai Semua
           </button>
-          <button
+          <button @click="exportToExcel"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
             Export EXCEL
@@ -178,8 +189,20 @@
           <div class="border-b border-grey-200">
             <!-- Show columns up to the third column -->
             <div class="flex justify-between mb-2">
-              <strong class="text-red-500">Total Nilai: </strong>
+              <strong class="text-blue-500">Mata Pelajaran: </strong>
               <span class="font-bold total_score">{{
+                pelajaran
+              }}</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <strong class="text-blue-500">Nama Test: </strong>
+              <span class="font-bold total_score">{{
+                test_name
+              }}</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <strong class="text-red-500">Total Nilai: </strong>
+              <span class="font-bold total_score text-red-500">{{
                 selectedUser["Total Score"]
               }}</span>
             </div>
@@ -210,7 +233,7 @@
                       d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"
                     ></path>
                   </svg>
-                  Pertanyaan
+                  Pertanyaan 
                 </a>
                 <p :class="'pertanyaan-' + index + ''">{{ key }}</p>
                 <!-- Show columns after the third column -->
@@ -242,9 +265,9 @@
                 >
                   {{ value.jawaban }}
                 </p>
-                <p class="text-red">Score : {{ value.score }}</p>
-                <p class="text-green">Koreksi : {{ value.correction }}</p>
-                <p class="text-blue">
+                <p class="text-red-500">Score : {{ value.score }}</p>
+                <p class="text-green-500">Koreksi : {{ value.correction }}</p>
+                <p class="text-blue-500">
                   Akurasi Sistem : {{ value.confidancescore }}
                 </p>
               </div>
@@ -281,6 +304,7 @@ import Papa from "papaparse";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import _ from "lodash";
+import * as XLSX from 'xlsx';
 // import html2pdf from "html2pdf.js";
 
 definePageMeta({
@@ -289,6 +313,9 @@ definePageMeta({
 export default {
   data() {
     return {
+      pelajaran: "", // Variable to store the "mata pelajaran"
+      test_name: "", // Variable to store the "Test" name
+
       isLoadingCols: false,
       sortColumn: "",
       sortDirection: "asc", // or 'desc'
@@ -330,6 +357,27 @@ export default {
     };
   },
   methods: {
+    exportToExcel() {
+      // Create a new array with only the desired columns
+      const excelData = this.userRows.map(user => ({
+        'Nama Lengkap': user['Nama Lengkap'],
+        'No Absen': user['No Absen'],
+        'Kelas': user['Kelas'],
+        'Pengumpulan': user['Timestamp'],
+        'Total Score': user['Total Score'],
+      }));
+
+      // Create the workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Append the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'User Data');
+
+      // Save the workbook to a file
+      const excelFileName = this.pelajaran + this.test_name +".xlsx";
+      XLSX.writeFile(workbook, excelFileName);
+    },
     displayCompleteFile(results, file) {
       console.log("Completed File", results, file);
       this.userRows = results.data;
