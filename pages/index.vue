@@ -144,7 +144,7 @@
               <h2
                 class="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white"
               >
-                Nilai : {{ score }}/10
+                Nilai : {{ score }}/100
               </h2>
               <p
                 class="mb-4 text-lg font-normal text-gray-500 dark:text-gray-400"
@@ -280,7 +280,7 @@ export default {
           // }),
           body: JSON.stringify({
             textGPT:
-              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 10, with 10 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QEUSTION-- " +
+              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION. and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QEUSTION-- " +
               this.questions +
               " --QEUSTION-- " +
               " \n--ANSWER-- " +
