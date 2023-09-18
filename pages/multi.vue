@@ -26,25 +26,25 @@
           <h1 v-if="!csv" class="text-red-500">Bukan file .csv!</h1>
         </div>
             <!-- Add the form above the "Nilai Semua" button -->
-    <div class="flex md:flex md:flex-grow flex-row mb-4">
+    <div class="flex flex-row mb-4 md:flex md:flex-grow">
       <div class="flex items-center">
         <label class="mr-2">Mata Pelajaran:</label>
-        <input v-model="pelajaran" class="border rounded px-2 py-1" />
+        <input v-model="pelajaran" class="px-2 py-1 border rounded" />
       </div>
       <div class="flex items-center ml-4">
         <label class="mr-2">Test:</label>
-        <input v-model="test_name" class="border rounded px-2 py-1" />
+        <input v-model="test_name" class="px-2 py-1 border rounded" />
       </div>
     </div>
-        <div class="flex md:flex md:flex-grow flex-row justify-end mb-4">
+        <div class="flex flex-row justify-end mb-4 md:flex md:flex-grow">
           <button
             @click="nilaiSemua"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+            class="px-4 py-2 mr-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
           >
             Nilai Semua
           </button>
           <button @click="exportToExcel"
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
           >
             Export EXCEL
           </button>
@@ -202,7 +202,7 @@
             </div>
             <div class="flex justify-between mb-2">
               <strong class="text-red-500">Total Nilai: </strong>
-              <span class="font-bold total_score text-red-500">{{
+              <span class="font-bold text-red-500 total_score">{{
                 selectedUser["Total Score"]
               }}</span>
             </div>
@@ -256,8 +256,7 @@
                   Jawaban</a
                 >
                 <p
-                  :class="
-                    'jawaban-' +
+                  :class="'jawaban-' +
                     index +
                     ' w-full p-2 rounded-md border border-gray-300 mb-4'
                   "
@@ -437,7 +436,7 @@ export default {
           },
           body: JSON.stringify({
             textGPT:
-              "You are a teacher for High School. I would like you to score an ANSWER written in Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
+              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
               pertanyaan +
               " --QUESTION-- " +
               " \n--ANSWER-- " +
