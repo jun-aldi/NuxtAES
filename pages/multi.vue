@@ -436,7 +436,7 @@ export default {
           },
           body: JSON.stringify({
             textGPT:
-              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
+              "You is teacher for High School. i would like you to score an ANSWER written by Bahasa Indonesia. Each ANSWER is assigned a rating of 0 to 100, with 100 being the highest and 0 the lowest. The ANSWER is scored based on the following QUESTION and give me confidence score when scoring that ANSWER. Ignore spelling errors. Format response {score: (score) correction: (correction in bahasa) confidence score: (confidence score with percentage)} --QUESTION-- " +
               pertanyaan +
               " --QUESTION-- " +
               " \n--ANSWER-- " +
